@@ -4,20 +4,35 @@ https://github.com/cjj208/jimc.git
 git config --global user.name "jimc"
 git config --global user.email "cjj208@gmail.com"
 git config -l 检查配置
-ssh-keygen -t rsa -C  "cjj208@gmail.com"生成密钥
+ssh-keygen -t rsa -C  "cjj208@gmail.com"   生成密钥
 生成密钥地址：C:\Users\jimchanchen\.ssh
+git remote -v 查当前仓库
 
-git remote add origin git@github.com:cjj208/jimctrader.git
+cd D:/Python_projects/pytdx2019/jimc_projects/jimcTrade
+111111111111111111111111111111111111111111111
+
+
+
+
+
+git remote add origin git@github.com:cjj208/jimc.git
 
 
 或在命令行上创建新的存储库
-echo "# jimctrader" >> README.md
+echo "# jimc" >> README.md
 git init
 git add README.md
 git commit -m "first commit"
-git remote add origin git@github.com:cjj208/jimctrader.git
+git remote add origin git@github.com:cjj208/jimc.git
 git push -u origin master
-…or push an existing repository from the command line
 或从命令行推送现有存储库
-git remote add origin git@github.com:cjj208/jimctrader.git
+git remote add origin git@github.com:cjj208/jimc.git
 git push -u origin master
+
+echo "# jimc" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin git@github.com:cjj208/jimc.git
+git push -u origin master
+
