@@ -1,4 +1,4 @@
-git地址
+﻿git地址
 https://github.com/cjj208/jimc.git
 
 git config --global user.name "jimc"
@@ -9,7 +9,7 @@ ssh-keygen -t rsa -C  "cjj208@gmail.com"   生成密钥
 git remote -v 查当前仓库
 
 cd D:/Python_projects/pytdx2019/jimc_projects/jimcTrade
-111111111111111111111111111111111111111111111
+
 
 
 
@@ -36,3 +36,27 @@ git commit -m "first commit"
 git remote add origin git@github.com:cjj208/jimc.git
 git push -u origin master
 
+=======================================================
+发布：
+1：git status 查看修改的部份 红色有更改 绿色没更改需要add
+2：git add --all 可提交所有
+·  git add -A  提交所有变化
+·  git add -u  提交被修改(modified)和被删除(deleted)文件，不包括新文件(new)
+·  git add start.py  提交新文件(new)和被修改(modified)文件，不包括被删除(deleted)文件
+如果出现git无法获取邮件如下设置 
+git config --global user.name "jimc"
+git config --global user.email "cjj208@gmail.com"
+git config -l 检查配置
+3.git commit -m "bug01"产生一个版本，用于可回归
+4: git push 提交
+
+取回
+1：ssh-keygen -t rsa -b 4096 -C "cjj208@gmail.com"
+2：enter
+3：目录跳转到 C:\Users\jimchanchen\.ssh
+4：执行 vi id_rsa.pub
+5：会执行出ssh-rsa 的文件
+全部复制添加到github中得ssh keys即可
+https://github.com/settings/keys
+
+git clone git@github.com:cjj208/jimc.git

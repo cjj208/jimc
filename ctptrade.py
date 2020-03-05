@@ -110,7 +110,11 @@ if __name__ == "__main__":
      
 #    tt.t.ReqOrderInsert('rb2005', DirectType.Sell, OffsetType.Close, 3421, 1)
      #撤单
-    #tt.t.ReqOrderAction(list(tt.t.orders)[-1])
+    #tt.t.ReqOrderAction(list(tt.t.orders)[-1])#撤单
+    #tt.t.ReqOrderInsert('ag2006', DirectType.Buy, OffsetType.Open, 4120, 1)
+    #全撤
+    for i in list(tt.t.orders.keys()):
+        tt.t.ReqOrderAction(i)#撤单)
 #    time.sleep(3)
 #    qq = TestQuote(front_quote, broker, investor, pwd)
 #    qq.run()
