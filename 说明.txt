@@ -49,7 +49,12 @@ git config --global user.email "cjj208@gmail.com"
 git config -l 检查配置
 3.git commit -m "bug01"产生一个版本，用于可回归
 4: git push 提交
-
+5:git push -f 無視規則，總之就是聽我的！（誤）
+可能是你本地仓库数据和远程仓库数据不一致，
+要先抓取并合并远程仓库全部内容
+（git pull origin master）
+再推送本地仓库数据(git push origin master)
+==========================================================
 取回
 1：ssh-keygen -t rsa -b 4096 -C "cjj208@gmail.com"
 2：enter
