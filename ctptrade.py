@@ -73,8 +73,8 @@ class TestQuote(object):
 
 if __name__ == "__main__":
     
-    front_trade = 'tcp://180.168.146.187:10100'
-    front_quote = 'tcp://180.168.146.187:10110'
+    front_trade = 'tcp://180.168.146.187:10130 '#7*24端口10130 
+    front_quote = 'tcp://180.168.146.187:10131'
     broker = '9999'
     investor = '090828'
     pwd = 'jimc1230'
@@ -82,15 +82,13 @@ if __name__ == "__main__":
     auth_code = '0000000000000000'
     proc = ''
     '''
-    
-    front_trade = 'tcp://61.186.254.131:42205'
-    front_quote = 'tcp://61.186.254.131:42213'
-    broker = '6666'
-    investor = '12345678'
-    pwd = 'CS123456'
-    appid = 'client_jimchan_1.0'
-    auth_code = '4J3MO7CZNTE6IU4L'
-    proc = ''
+BrokerID统一为：9999
+标准CTP：
+    第一组：Trade Front：180.168.146.187:10100，Market Front：180.168.146.187:10110；【电信】
+    第二组：Trade Front：180.168.146.187:10101，Market Front：180.168.146.187:10111；【电信】
+    第三组：Trade Front： 218.202.237.33 :10102，Market Front：218.202.237.33 :10112；【移动】
+7*24小时环境：
+    第一组：Trade Front： 180.168.146.187:10130，Market Front：180.168.146.187:10131；【电信】
     '''
     if investor == '':
         investor = input('invesotr:')
@@ -100,11 +98,14 @@ if __name__ == "__main__":
         proc = input('product info:')
     tt = TestTrade(front_trade, broker, investor, pwd, appid, auth_code, proc)
     tt.run()
+#    import struct
+#    struct.pack(tt.t.positions)
+    
 #    time.sleep(5)
     #买入限价单
 #     tt.t.ReqOrderInsert('fu2005', DirectType.Buy, OffsetType.Open, 2005, 1)
      #卖出限价单
-#    tt.t.ReqOrderInsert('rb2005', DirectType.Sell, OffsetType.Open, 3421, 1)
+#    tt.t.ReqOrderInsert('fu2005', DirectType.Sell, OffsetType.Open, 2009, 1)
      #平仓
 #    tt.t.ReqOrderInsert('fu2005', DirectType.Sell, OffsetType.Open, 2044, 1)
      
@@ -112,9 +113,11 @@ if __name__ == "__main__":
      #撤单
     #tt.t.ReqOrderAction(list(tt.t.orders)[-1])#撤单
     #tt.t.ReqOrderInsert('ag2006', DirectType.Buy, OffsetType.Open, 4120, 1)
+    
+    
     #全撤
-    for i in list(tt.t.orders.keys()):
-        tt.t.ReqOrderAction(i)#撤单)
+#    for i in list(tt.t.orders.keys()):
+#        tt.t.ReqOrderAction(i)#撤单)
 #    time.sleep(3)
 #    qq = TestQuote(front_quote, broker, investor, pwd)
 #    qq.run()
