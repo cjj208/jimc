@@ -38,9 +38,9 @@ class Datacent:
 
     def qihuo_connectSer(self):
         
-        self.qihuo_api.connect('218.80.248.229', 7721)
+        self.qihuo_api.connect('124.74.236.94', 7721)
         
-        qihuoret = self.qihuo_api.connect('218.80.248.229', 7721)
+        qihuoret = self.qihuo_api.connect('124.74.236.94', 7721)
         if qihuoret == False:
             print ("期货没有连接。。。")
             return qihuoret
@@ -342,7 +342,6 @@ if __name__ == '__main__':
 #                    etime03 = datetime.datetime.now().replace(year= datetime.datetime.now().year,month = datetime.datetime.now().month,day = datetime.datetime.now().day, hour=23,minute=00,second=0,microsecond=0)
 #                    
                     calltime = (9<=stime.tm_hour<11) | (13<=stime.tm_hour<18) | (21<=stime.tm_hour<23)
-####################
                     if calltime:
                         print ("当前是否为交易时间：%s"%calltime)
                         gupiaocount = list(range(len(config.cfstock)))
@@ -402,10 +401,7 @@ if __name__ == '__main__':
                                     print ('重连成功\n'*10)
                                     break
                                 
-                                
-                             
-                             
-                             
+
                         
                         subprocess.call(winorlinux,shell=True)  
                         table = table.get_string(fields=

@@ -19,7 +19,7 @@ mail_addr_2 = "" #如果需要抄送则在冒号里填入邮箱地址
 categorycount = 1000  #取多少根K线
 dc_count = 10       #唐奇安通道参数
 
-st_period_fast =20
+st_period_fast =10
 st_mult_fast =2
 st_period_slow =20
 st_mult_slow =6

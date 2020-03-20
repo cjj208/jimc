@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
-im = "helloworld"
-id = 40
-print (id*50)
-print (im)
-print ("=="*20)
+#
+# import pandas as pd
+# import numpy as np
+# ran = np.random.rand(12,3)
+# df = pd.DataFrame(ran)
+# print(df)
+# -*- coding: utf-8 -*-
+
+"""
+Module implementing MainWindow.
+"""

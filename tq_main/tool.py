@@ -1,101 +1,26 @@
-﻿# -*- coding: utf-8 -*-
-"""
-Created on Tue May  8 15:43:25 2018
-
-@author: JimchanChen
-"""
-#from art import tprint 
-import time as t
-#import win32com.client
-#import winsound
-import ta
-import numpy as np
-import pandas as pd
-import prettytable as pt
-import datetime
-import config
 from email.header import Header 
 from email.mime.text import MIMEText
 import smtplib
-import platform
-import matplotlib.ticker as ticker
-import matplotlib.pyplot as plt
-from mpl_finance import candlestick_ohlc
-import matplotlib.pyplot as plt
+import win32com.client
+import winsound
+import time 
+import numpy as np
+import pandas as pd
 
-def show_menu():
-    """显示菜单"""
-    print ("欢迎使用【股票期货预警系统】V1.0")
-    print ("*"*60)
-    print ("actionStock",)
-    print ("*"*60)    
 def beep():
     count = 0
     while (count < 1):
-        t.sleep(0.5)
-#        spk = win32com.client.Dispatch("SAPI.SpVoice")
-#        spk.Speak("priceAction")
-        #winsound.Beep(1500, 500)
-        #winsound.Beep(1500, 500)
+        time.sleep(0.5)
+        spk = win32com.client.Dispatch("SAPI.SpVoice")
+        spk.Speak("做多一手")
+        winsound.Beep(1500, 500)
+        winsound.Beep(1500, 500)
         pass
         count += 1
 
+#%%
+#SuperTrend
 
-def oncetime():
-    #设置间隔时间
-    cate = config.category
-    if cate == 7:
-        if datetime.datetime.now().minute%1==0:  #一分钟
-            return True
-        else:
-            return False
-        
-    if cate == 0:
-        if (datetime.datetime.now().minute%5==4) & (datetime.datetime.now().second>=50):#五分钟
-            return True
-        else:
-            return False  
-    if cate == 1:
-        if (datetime.datetime.now().minute%15 == 0) & (datetime.datetime.now().second<=5):#15分钟    
-            return True
-        else:
-            return False  
-    if cate == 3:
-        if (datetime.datetime.now().minute==59) & (datetime.datetime.now().second>=50):#一小时  
-            return True
-        else:
-            return False  
-        
-
-    
-def winorlinux():
-    #判断是否是windows或是linux系统执行不同的清屏命令
-    sysname = platform.system()
-    if sysname == "Windows":    
-        return "cls"
-        
-    else:
-        return "clear"
-        
-def k_zhouqi():
-    
-    if config.category ==0:
-        return "5分钟K线"
-    if config.category ==1:
-        return "15分钟K线 "
-    if config.category ==2:
-        return "30分钟K线"
-    if config.category ==3:
-        return "1小时K线"
-    if config.category ==4:
-        return "日K线"
-    if config.category ==5:
-        return "周K线"
-    if config.category ==6:
-        return "月K线"
-    if config.category ==7:
-        return "1分钟"    
-    
 
 def SuperTrend(df, period, multiplier, ohlc=['open', 'high', 'low', 'close']):
 
@@ -237,107 +162,8 @@ def sohu_sendmail(mail,sub,mesg):
         smtpObj.quit()  
     except Exception as e:
         print ("未发送邮件！%s"% e)
-    
-def StochRSI(df,m,p):
-      df["rsi"] = ta.momentum.rsi(df.close,n=m,)
 
-      RSI = df.rsi
-      print(RSI)
-      LLV= RSI.rolling(window=m).min()
-      HHV= RSI.rolling(window=m).max()
-      stochRSI = (RSI  - LLV) / (HHV - LLV) * 100
-     
-#      fastk = RSI.MA(np.array(stochRSI)  , p)
-#      fastd = RSI.MA(np.array(fastk), p)
-
-      
-      df['stochfastk'] = stochRSI.rolling(window=p).mean()
-      df['stochfastk'].fillna(0, inplace=True)
-      
-      df['stochfastd'] = df['stochfastk'].rolling(window=p).mean()
-      df['stochfastd'].fillna(0, inplace=True)
-      return df 
-
-    
-def donchian_channel_hband(close, n=20, fillna=False):
-    """Donchian channel (DC)
-
-    The upper band marks the highest price of an issue for n periods.
-
-    https://www.investopedia.com/terms/d/donchianchannels.asp
-
-    Args:
-        close(pandas.Series): dataset 'Close' column.
-        n(int): n period.
-
-    Returns:
-        pandas.Series: New feature generated.
-    """
-    hband = close.rolling(n).max()
-    if fillna:
-        hband = hband.replace([np.inf, -np.inf], np.nan).fillna(method='backfill')
-    return pd.Series(hband, name='dchband')
-
-
-def donchian_channel_lband(close, n=20, fillna=False):
-    """Donchian channel (DC)
-
-    The lower band marks the lowest price for n periods.
-
-    https://www.investopedia.com/terms/d/donchianchannels.asp
-
-    Args:
-        close(pandas.Series): dataset 'Close' column.
-        n(int): n period.
-
-    Returns:
-        pandas.Series: New feature generated.
-    """
-    lband = close.rolling(n).min()
-    if fillna:
-        lband = lband.replace([np.inf, -np.inf], np.nan).fillna(method='backfill')
-    return pd.Series(lband, name='dclband')
-
-def MACD(df, short, long, m):
-    """
-    异同移动平均线
-
-    Args:
-        df (pandas.DataFrame): Dataframe格式的K线序列
-
-        short (int): 短周期
-
-        long (int): 长周期
-
-        m (int): 移动平均线的周期
-
-    Returns:
-        pandas.DataFrame: 返回的DataFrame包含3列, 是"diff", "dea"和"bar", 分别代表离差值, DIFF的指数加权移动平均线, MACD的柱状线
-
-        (注: 因 DataFrame 有diff()函数，因此获取到此指标后："diff"字段使用 macd["diff"] 方式来取值，而非 macd.diff )
-
-    Example::
-
-        # 获取 CFFEX.IF1903 合约的异同移动平均线
-        from tqsdk import TqApi, TqSim
-        from tqsdk.ta import MACD
-
-        api = TqApi(TqSim())
-        klines = api.get_kline_serial("CFFEX.IF1903", 24 * 60 * 60)
-        macd = MACD(klines, 12, 26, 9)
-        print(list(macd["diff"]))
-        print(list(macd["dea"]))
-        print(list(macd["bar"]))
-
-        # 预计的输出是这样的:
-        [..., 149.58313904045826, 155.50790712365142, 160.27622505636737, ...]
-        [..., 121.46944573796466, 128.27713801510203, 134.6769554233551, ...]
-        [..., 56.2273866049872, 54.46153821709879, 51.19853926602451, ...]
-    """
-    new_df = pd.DataFrame()
-    eshort = EMA(df["close"], short)
-    elong = EMA(df["close"], long)
-    new_df["diff"] = eshort - elong
-    new_df["dea"] = EMA(new_df["diff"], m)
-    new_df["bar"] = 2 * (new_df["diff"] - new_df["dea"])
-    return new_df
+if __name__ == "__main__":
+    sendmail = sohu_sendmail("26201084@qq.com",sub="sub",mesg="我要测一下")
+    sendmail
+    pass

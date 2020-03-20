@@ -18,6 +18,7 @@ import go
 import time
 import matplotlib.animation as animation
 import Indicators
+from ta.trend import MACD
 cflen=2
 
 def actionOrder(df):
@@ -38,9 +39,9 @@ def actionOrder(df):
     for i in df.index:
         #time.sleep(0.1)
 
-        buy = df.iloc[i,df.columns.get_loc("superpoint")]==1
+        buy = (df.iloc[i,df.columns.get_loc("superpoint")]==1) & (df.iloc[i,df.columns.get_loc("sma89144")]==1)
         sell = df.iloc[i,df.columns.get_loc("sma5")] < df.iloc[i,df.columns.get_loc("sma10")]
-        sellshort = df.iloc[i,df.columns.get_loc("superpoint")]==-1 
+        sellshort = (df.iloc[i,df.columns.get_loc("superpoint")]==1) & (df.iloc[i,df.columns.get_loc("sma89144")]==-1)
         buyToCover = df.iloc[i,df.columns.get_loc("sma5")] > df.iloc[i,df.columns.get_loc("sma10")]
         if (buy==True) & (longCount <=tradeLen) & (shortCount ==0):
             longCount += 1
@@ -118,21 +119,31 @@ def GainLoss():
         else:
             pass
 #    for gain in df.index
-    gainLoss = pd.DataFrame(gainLoss)
-    print (gainLoss)
+    gainLoss = pd.DataFrame(gainLoss,)
+    
+    print ("交易明细：",gainLoss)
+    print ("gainLoss",gainLoss[1].sum())
+    return gainLoss
 
   
 if __name__ == "__main__":
     
+    
+    #%%画K线主图
     datacent = go.Datacent()
-    if datacent.qihuo_connectSer() and datacent.gupiao_connectSer():
+    if datacent.qihuo_connectSer():
         
         qihuocount = list(range(len(cf.cfqihuo))) 
         df = datacent.qihuoK(cflen)
       
         df = tdx_tools.SuperTrend(df,period=cf.st_period_fast,multiplier=cf.st_mult_fast,)
         df = tdx_tools.StochRSI(df,m=14,p=7)
-        df = df.iloc[200:]
+        dfmacd = MACD(df['close'],n_slow=10,n_fast=5,n_sign=89)
+        df["macd"] = dfmacd.macd()
+        df['diff'] = dfmacd.macd_diff()
+        df['macd_signal'] = dfmacd.macd_signal()
+        
+        df = df.iloc[100:]
         
         weekday_quotes=[tuple([i]+list(quote[1:])) for i,quote in enumerate(df.values,)]
         fig = plt.figure(figsize=(1000 / 72, 500 / 72),facecolor='#CCCCCC', edgecolor='#CCCCCC')
@@ -151,7 +162,7 @@ if __name__ == "__main__":
         
         ax3 = fig.add_subplot(4,1,4)
         ax3.set_facecolor('#CCCCCC')    
-    
+        
     
     
         #%%画K线主图
@@ -165,23 +176,23 @@ if __name__ == "__main__":
         ax.plot(df["sma5"],color="black",linewidth=0.5,linestyle="-")
         ax.plot(df["sma10"],color="black",linewidth=0.5,linestyle="-")
     #    ax.plot(df["sma20"],color="black",linewidth=0.5,linestyle="-")
-    #    ax.plot(df["sma89"],color="black",linewidth=0.5,linestyle="-")
+        ax.plot(df["sma89"],color="black",linewidth=0.5,linestyle="-")
     #    ax.plot(df["sma144"],color="black",linewidth=0.5,linestyle="-")
         ax.set_title("{%s}{%s}{%s}" % (cf.cfqihuo[cflen]["stockname"],cf.cfqihuo[cflen]["code"],tdx_tools.k_zhouqi()))
         candlelist = ['看涨抱线','看涨刺透','看涨孕线','看跌吞没','看跌孕线','看涨一线穿','看跌一线穿']
         candlelist = ['看跌一线穿',]
     
-            
-        '''
-        for j in list(df[df["order"]=="sell"].index):
-            ax.annotate(s="Sell",xy=(i,df.iloc[i]["close"]),arrowprops = dict(facecolor = "g", 
-                        headlength = 5, headwidth =5, width = 5))
+    
+        
+        # for j in list(df[df["order"]=="sell"].index):
+        #     ax.annotate(s="Sell",xy=(j,df.iloc[j]["close"]),arrowprops = dict(facecolor = "g", 
+        #                 headlength = 5, headwidth =5, width = 5))
         
         for z in list(df[df["superpoint"]==-1].index):
             ax.text(z,df.iloc[z]["supertrend"],r'--',fontsize=1,bbox=dict(facecolor='red', alpha=0.5))
             #supertrend转折处
             #ax.annotate(s="supS",xy=(z,df.iloc[z]["supertrend"]),arrowprops = dict(facecolor = "b", headlength = 5, headwidth =5, width = 5))
-        '''
+        
         
         '''
         for cand in candlelist:
@@ -209,14 +220,22 @@ if __name__ == "__main__":
         ax2.xaxis.set_major_formatter(ticker.FuncFormatter(format_date))
         ax2.grid(True)
         #%% RSI指标
-        ax3.set_ylabel('RSI')
-        ax3.plot(df.rsi,'gray',alpha=0.8,linewidth=0.8,label='14日均线')
-    #    ax3.set_title('RSI')
-        ax3.xaxis.set_major_locator(ticker.MultipleLocator(30))
+    #     ax3.set_ylabel('RSI')
+    #     ax3.plot(df.rsi,'gray',alpha=0.8,linewidth=0.8,label='14日均线')
+    # #    ax3.set_title('RSI')
+    #     ax3.xaxis.set_major_locator(ticker.MultipleLocator(30))
+    #     ax3.xaxis.set_major_formatter(ticker.FuncFormatter(format_date))
+    #     ax3.grid(True)
+        #%% MACD指标
+        ax3.set_ylabel('MACD')
+        ax3.plot(df.macd,'#3e4145',alpha=0.8,linewidth=0.8,label='12 26 9日均线')
+        ax3.plot(df.macd_signal,'#3e4145',alpha=0.8,linewidth=0.8,label='12 26 9日均线')
+        ax3.bar(range(df.shape[0]),df['diff'],facecolor = '#464547',)
+        # ax3.set_title('MACD')
+        ax3.xaxis.set_major_locator(ticker.MultipleLocator(100))
         ax3.xaxis.set_major_formatter(ticker.FuncFormatter(format_date))
         ax3.grid(True)
-        
-        
+
         
          #%% 结束画图
         fig.autofmt_xdate()

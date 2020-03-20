@@ -3,7 +3,7 @@
 from pytdx.exhq import TdxExHq_API
 import ta
 api = TdxExHq_API()
-with api.connect('218.80.248.229', 7721):
+with api.connect('124.74.236.94', 7721):
     #查询市场中商品数量
     marketsID = api.to_df(api.get_markets())
     #查询五档行情
@@ -31,12 +31,4 @@ with api.connect('218.80.248.229', 7721):
     df = kdata
     df["rsi"] = ta.momentum.rsi(df.close,n=14,)
     df['stoch'] = ta.momentum.stoch(df.high,df.low,df.close,14)
-    
-    
-    
-    
-    
-    
-    # some codes
-    
     

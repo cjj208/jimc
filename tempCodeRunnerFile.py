@@ -1,1 +1,0 @@
-   qq = TestQuote(front_quote, broker, investor, pwd)

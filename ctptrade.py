@@ -41,13 +41,6 @@ class TestTrade(object):
 
 
 
-     
-        
-
-
-
-
-
 
     def on_connect(self, obj):
         self.t.ReqUserLogin(self.investor, self.pwd, self.broker, self.proc, self.appid, self.authcode)
@@ -72,7 +65,7 @@ class TestQuote(object):
 
         self.q = CtpQuote()
         self.q.OnConnected = lambda x: self.q.ReqUserLogin(self.investor, self.pwd, self.broker)
-        self.q.OnUserLogin = lambda o, i: self.q.ReqSubscribeMarketData('jd2005')
+        self.q.OnUserLogin = lambda o, i: self.q.ReqSubscribeMarketData('ap2005')
         
     def run(self):
         self.q.ReqConnect(self.front)
@@ -83,11 +76,20 @@ class TestQuote(object):
 
 if __name__ == "__main__":
     
-    front_trade = 'tcp://180.168.146.187:10130 '#7*24端口10130 
-    front_quote = 'tcp://180.168.146.187:10131'
+    front_trade = 'tcp://180.168.146.187:10101'#7*24端口10130 
+    front_quote = 'tcp://180.168.146.187:10111'
     broker = '9999'
     investor = '090828'
     pwd = 'jimc1230'
+    appid = 'simnow_client_test'
+    auth_code = '0000000000000000'
+    proc = ''
+    
+    front_trade = 'tcp://183.11.217.235:41207'#7*24端口10130 
+    front_quote = 'tcp://183.11.217.235:41215'
+    broker = '6020'
+    investor = '117889998'
+    pwd = '262010'
     appid = 'simnow_client_test'
     auth_code = '0000000000000000'
     proc = ''
@@ -108,10 +110,11 @@ BrokerID统一为：9999
         appid = input('appid:')
         auth_code = input('auth code:')
         proc = input('product info:')
-    tt = TestTrade(front_trade, broker, investor, pwd, appid, auth_code, proc)
+    tt = TestTrade(front_trade, broker, investor, pwd, appid,)
     tt.run()
     
     time.sleep(3)
+    print ("+"*30)
     for i in tt.t.positions:print (tt.t.positions[i])
     
     cbj = tt.t.trades
@@ -122,12 +125,13 @@ BrokerID统一为：9999
         print("CloseProfit",itm.CloseProfit)
         print("Commission",itm.Commission)
         print("InstrumentID",itm.InstrumentID) 
+        
 
   
 
 #    time.sleep(5)
     #买入限价单
-     #tt.t.ReqOrderInsert('fu2005', DirectType.Buy, OffsetType.Open, 2005, 1)
+     #tt.t.ReqOrderInsert('AP005', DirectType.Buy, OffsetType.Open, 6805, 1)
      #卖出限价单
 #    tt.t.ReqOrderInsert('fu2005', DirectType.Sell, OffsetType.Open, 2009, 1)
      #平仓
@@ -139,23 +143,21 @@ BrokerID统一为：9999
     #tt.t.ReqOrderInsert('ag2006', DirectType.Buy, OffsetType.Open, 4120, 1)
     
 #    qq.q.ReqConnect(qq.front)
-   
+#    tt.t._OnRspQryPositionDetail
          
     #全撤
-#    for i in list(tt.t.orders.keys()):
-#        tt.t.ReqOrderAction(i)#撤单)
+    for i in list(tt.t.orders.keys()):
+        tt.t.ReqOrderAction(i)#撤单)
 #    time.sleep(3)
     qq = TestQuote(front_quote, broker, investor, pwd)
-#    
+#    qq.q.ReqSubscribeMarketData
     qq.q.ReqConnect(qq.front) 
-#    qq.q.tomango
-#    
+
 #    qq.run()
     
  
     # time.sleep(6)
   #  for inst in tt.t.instruments.values():
-        
        # print(inst)
 #    input()
 #    tt.release()
